@@ -8,7 +8,6 @@
 
 /* TODO:
  *  Add bottom section in its entirety.
- *  Add functionality to buttons to switch to the lit indicator when pressed.
  *  Add display for floor numbers in top section.
  *  Add functionality for switching floors. They need to be displayed at the top.
  *  Maybe make labels look nicer.
@@ -26,6 +25,10 @@ int labelWidth = 150;
 int labelRadii = 28;
 PFont labelFont;
 PFont infoFont;
+
+int millis;
+int startTime = -1;
+ArrayList<Integer> queue = new ArrayList<Integer>();
 
 String[][] floorLabels = {{"Stacks 4","PS3000-QL"},{"Stacks 2","H-LT"},{"Mezzanine","Offices"},{"Basement","ATLC"},
                           {"Stacks 5","QM-Z"},{"Stacks 3","M-PS2999"},{"Stacks 1","A-GV"},{"Ground","Main Floor"},};
@@ -80,6 +83,19 @@ void draw(){
 
      }
   }
+
+  // TEMPORARY HACK: should change to calculating based on the distance of the floors. 1 floor = 2000ms or something.
+  if (queue.size() >0 && startTime == -1){
+    startTime = millis();
+  } else if (queue.size() >0 && millis() - startTime > 2000){
+    buttonStatus[queue.get(0)] = false;
+    queue.remove(0);
+    if (queue.size() > 0){
+      startTime = millis();
+    }else{
+      startTime = -1;
+    }
+  } 
   
 }
 
@@ -109,4 +125,5 @@ void mouseClicked(){
   }
 
   buttonStatus[button] = true;
+  queue.add(button);
 }
