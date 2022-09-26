@@ -7,7 +7,6 @@
 */ 
 
 /* TODO:
- *  Add bottom section in its entirety.
  *  Add display for floor numbers in top section.
  *  Add functionality for switching floors. They need to be displayed at the top.
  *  Maybe make labels look nicer.
@@ -20,6 +19,7 @@ PImage button_notlit;
 PImage button_lit;
 boolean[] buttonStatus = {false,false,false,false,false,false,false,false};
 boolean[] buttonHeld = {false, false};
+boolean helpStatus = false;
 
 int labelLength = 90;
 int labelWidth = 150;
@@ -27,7 +27,7 @@ int labelRadii = 28;
 PFont labelFont;
 PFont infoFont;
 
-int millis;
+int helpTime = -1;
 int startTime = -1;
 ArrayList<Integer> queue = new ArrayList<Integer>();
 
@@ -84,6 +84,9 @@ void draw(){
 
      }
   }
+
+  // Bottom Section
+
   // Open Doors
   if(!buttonHeld[0]){
     fill(0);
@@ -103,6 +106,20 @@ void draw(){
     text("Close Doors", 500,795);
     image(button_notlit, 315,750,buttonSize,buttonSize);
   }
+
+  // Assistance button
+  if(!helpStatus){
+    fill(0);
+    rect(360,865,labelWidth,labelLength,labelRadii);
+    fill(255);
+    textFont(labelFont);
+    text("Assistance", 435,915);
+    image(button_notlit, 255,865,buttonSize,buttonSize);
+  } else{
+    image(button_lit, 255,865,buttonSize,buttonSize);
+    
+  }
+
   
 
   // TEMPORARY HACK: should change to calculating based on the distance of the floors. 1 floor = 2000ms or something.
@@ -116,7 +133,17 @@ void draw(){
     }else{
       startTime = -1;
     }
-  } 
+  }
+
+  // This is sometimes faulty. Might want to store start time for the help separately?
+  if (helpStatus && millis() - helpTime > 10000){
+    helpStatus = false;
+    helpTime = -1;
+  } else if (!helpStatus && helpTime == -1) {
+    helpTime = millis();
+  }
+
+   
   
 }
 
@@ -138,7 +165,12 @@ void mouseClicked(){
   int row = round((mouseY - 195) / 120);
   int button = column * 4 + row;
 
-  // Check if the mouse was pressed outside of the buttons.
+  if(mouseY > 850 && mouseY<1000 && mouseX > 200 && mouseX <350){
+    helpStatus=true;
+    return;
+  }
+
+  // Check if the mouse was pressed outside of the floor buttons.
   // Also check if the button is already on.
   // If either are true, we do nothing and return to main.
   if(button >=8 || row >=4 || row<0 || column >=2 || column<0 ||buttonStatus[button] ){
