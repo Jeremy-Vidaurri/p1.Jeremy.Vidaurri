@@ -19,7 +19,7 @@ int buttonSize = 90;
 int lightSize = 45;
 PImage button_notlit;
 PImage button_lit;
-
+boolean[] buttonStatus = {false,false,false,false,false,false,false,false};
 
 int labelLength = 90;
 int labelWidth = 150;
@@ -60,7 +60,12 @@ void draw(){
       rect(25+400*j,250+100*i,labelWidth,labelLength,labelRadii);
 
       // Buttons
-      image(button_notlit,195+120*j,250+100*i,buttonSize,buttonSize);
+      if(buttonStatus[i+j*4]){
+        image(button_lit,195+120*j,250+100*i,buttonSize,buttonSize);
+      }else{
+        image(button_notlit,195+120*j,250+100*i,buttonSize,buttonSize);
+      }
+      
 
       // Text for labels
       textAlign(CENTER);
@@ -89,4 +94,19 @@ void xGradient(int x, int y, float w, float h, color c1, color c2) {
     stroke(c);
     line(i, y, i, y+h);
   }
+}
+
+void mouseClicked(){
+  int column = round((mouseX - 250) / 100);
+  int row = round((mouseY - 195) / 120);
+  int button = column * 4 + row;
+
+  // Check if the mouse was pressed outside of the buttons.
+  // Also check if the button is already on.
+  // If either are true, we do nothing and return to main.
+  if(button >=8 || row >=4 || column >=2 ||buttonStatus[button] ){
+    return;
+  }
+
+  buttonStatus[button] = true;
 }
