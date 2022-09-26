@@ -19,6 +19,7 @@ int lightSize = 45;
 PImage button_notlit;
 PImage button_lit;
 boolean[] buttonStatus = {false,false,false,false,false,false,false,false};
+boolean[] buttonHeld = {false, false};
 
 int labelLength = 90;
 int labelWidth = 150;
@@ -39,8 +40,8 @@ void setup(){
   size(600,1000);
   ellipseMode(RADIUS);
   
-  labelFont = createFont("Roboto",28);
-  infoFont = createFont("Roboto",18);
+  labelFont = createFont("Roboto",26);
+  infoFont = createFont("Roboto",16);
 
   xGradient(0, 0, width/2, height, color(#3A3B3C), color(175));
   xGradient(width/2, 0, width/2, height, color(175), color(#3A3B3C));
@@ -83,6 +84,26 @@ void draw(){
 
      }
   }
+  // Open Doors
+  if(!buttonHeld[0]){
+    fill(0);
+    rect(25,750,labelWidth,labelLength,labelRadii);
+    fill(255);
+    textFont(labelFont);
+    text("Open Doors", 100,795);
+    image(button_notlit, 195,750,buttonSize,buttonSize);
+  }
+
+  // Close Doors
+  if(!buttonHeld[1]){
+    fill(0);
+    rect(425,750,labelWidth,labelLength,labelRadii);
+    fill(255);
+    textFont(labelFont);
+    text("Close Doors", 500,795);
+    image(button_notlit, 315,750,buttonSize,buttonSize);
+  }
+  
 
   // TEMPORARY HACK: should change to calculating based on the distance of the floors. 1 floor = 2000ms or something.
   if (queue.size() >0 && startTime == -1){
@@ -120,10 +141,25 @@ void mouseClicked(){
   // Check if the mouse was pressed outside of the buttons.
   // Also check if the button is already on.
   // If either are true, we do nothing and return to main.
-  if(button >=8 || row >=4 || column >=2 ||buttonStatus[button] ){
+  if(button >=8 || row >=4 || row<0 || column >=2 || column<0 ||buttonStatus[button] ){
     return;
   }
 
   buttonStatus[button] = true;
   queue.add(button);
+}
+
+void mousePressed(){
+  if(mouseX>=200 && mouseX<=275 && mouseY <= 850 && mouseY >= 750){
+    image(button_lit, 195,750,buttonSize,buttonSize);
+    buttonHeld[0] = true;
+  } else if (mouseX>=315 && mouseX<=410 && mouseY <= 850 && mouseY >= 750){
+    image(button_lit, 315,750, buttonSize,buttonSize);
+    buttonHeld[1] = true;
+  }
+}
+
+void mouseReleased(){
+  for(int i = 0; i<2; i++)
+    buttonHeld[i] = false;
 }
