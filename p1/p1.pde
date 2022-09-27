@@ -1,20 +1,24 @@
 /*
  * Jeremy Vidaurri - Project 1 for CS 3366 Human-Computer Interaction.
  * Elevator was designed based on the Texas Tech Library Stacks elevator.
- * 'Top Section' refers to the section containing the sign displaying floor number.
+ * 'Top Section' refers to the section containing the speaker/mic.
  * 'Mid Section' refers to the section containing the buttons and labels for each floor.
  * 'Bottom Section' refers to the section containing the buttons and labels for emergency services and close/open elevator.
 */ 
 
 /* TODO:
- *  Add display for floor numbers in top section.
- *  Add functionality for switching floors. They need to be displayed at the top.
+ *  Add speakers in the top section
  *  Maybe make labels look nicer.
  *  Add a star symbol next to the ground floor label
+ *  Add symbols for open and close doors
 */ 
 
+PImage speaker;
+PImage mic;
+int speakerSize = 120;
+int micSize =50;
+
 int buttonSize = 90;
-int lightSize = 45;
 PImage button_notlit;
 PImage button_lit;
 boolean[] buttonStatus = {false,false,false,false,false,false,false,false};
@@ -30,9 +34,10 @@ PFont infoFont;
 int helpTime = -1;
 int startTime = -1;
 ArrayList<Integer> queue = new ArrayList<Integer>();
+int curFloor = 1;
 
-String[][] floorLabels = {{"Stacks 4","PS3000-QL"},{"Stacks 2","H-LT"},{"Mezzanine","Offices"},{"Basement","ATLC"},
-                          {"Stacks 5","QM-Z"},{"Stacks 3","M-PS2999"},{"Stacks 1","A-GV"},{"Ground","Main Floor"},};
+String[][] floorLabels = {{"Stacks 4","PS3000-QL","6"},{"Stacks 2","H-LT","4"},{"Mezzanine","Offices","2"},{"Basement","ATLC","0"},
+                          {"Stacks 5","QM-Z","7"},{"Stacks 3","M-PS2999","5"},{"Stacks 1","A-GV","3"},{"Ground","Main Floor","1"},};
 
 
 
@@ -48,6 +53,8 @@ void setup(){
 
   button_notlit = loadImage("images/button_notlit.png");
   button_lit = loadImage("images/button_lit.png");
+  speaker = loadImage("images/speaker.png");
+  mic = loadImage("images/mic.png");
 
   noStroke();
 }
@@ -55,6 +62,10 @@ void setup(){
 
   
 void draw(){
+  
+  // Top section
+  image(speaker,width/2-speakerSize/2,20,speakerSize,speakerSize);
+  image(mic,width/2-micSize/2,150,micSize,micSize);
   
   // Labels and buttons for the mid section
   for(int i=0;i<4;i++){
@@ -122,12 +133,17 @@ void draw(){
 
   
 
-  // TEMPORARY HACK: should change to calculating based on the distance of the floors. 1 floor = 2000ms or something.
+  // If there any floor requests, mark the time to simulate switching floors.
+  // Then calculate the distance and multiply it by 2s.
+  // Once the floor is reached, remove it from the queue and reset the timer.
+  // If there are no more items in the queue, disable the timer by setting it to -1.
   if (queue.size() >0 && startTime == -1){
     startTime = millis();
-  } else if (queue.size() >0 && millis() - startTime > 2000){
+  } else if (queue.size() >0 && millis() - startTime > 1500 * abs(int(floorLabels[queue.get(0)][2]) - curFloor)){
+    curFloor = int(floorLabels[queue.get(0)][2]);
     buttonStatus[queue.get(0)] = false;
     queue.remove(0);
+
     if (queue.size() > 0){
       startTime = millis();
     }else{
@@ -135,7 +151,8 @@ void draw(){
     }
   }
 
-  // This is sometimes faulty. Might want to store start time for the help separately?
+  // Once the assistance button has been pressed, set the timer for 10s.
+  // This is to simulate the amount of time until a representative will answer.
   if (helpStatus && millis() - helpTime > 10000){
     helpStatus = false;
     helpTime = -1;
@@ -143,8 +160,8 @@ void draw(){
     helpTime = millis();
   }
 
-   
-  
+  fill(0);
+  line(300,0,300,1000);
 }
 
 // This function is derived from the linear gradient example provided by Processing
@@ -164,7 +181,8 @@ void mouseClicked(){
   int column = round((mouseX - 250) / 100);
   int row = round((mouseY - 195) / 120);
   int button = column * 4 + row;
-
+  
+  // Edge case for clicking the assistance button
   if(mouseY > 850 && mouseY<1000 && mouseX > 200 && mouseX <350){
     helpStatus=true;
     return;
@@ -177,11 +195,13 @@ void mouseClicked(){
     return;
   }
 
+  // If we get this far, the button should light up and be added to the request queue.
   buttonStatus[button] = true;
   queue.add(button);
 }
 
 void mousePressed(){
+  // While holding down the open/close door button, it should stay lit.
   if(mouseX>=200 && mouseX<=275 && mouseY <= 850 && mouseY >= 750){
     image(button_lit, 195,750,buttonSize,buttonSize);
     buttonHeld[0] = true;
@@ -192,6 +212,7 @@ void mousePressed(){
 }
 
 void mouseReleased(){
+  // Once the open/close door button has been released, reset its status.
   for(int i = 0; i<2; i++)
     buttonHeld[i] = false;
 }
