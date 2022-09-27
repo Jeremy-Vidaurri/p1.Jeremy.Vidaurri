@@ -6,12 +6,6 @@
  * 'Bottom Section' refers to the section containing the buttons and labels for emergency services and close/open elevator.
 */ 
 
-/* TODO:
- *  Add speakers in the top section
- *  Maybe make labels look nicer.
- *  Add a star symbol next to the ground floor label
- *  Add symbols for open and close doors
-*/ 
 
 PImage speaker;
 PImage mic;
@@ -30,6 +24,9 @@ int labelWidth = 150;
 int labelRadii = 28;
 PFont labelFont;
 PFont infoFont;
+PImage star;
+PImage open;
+PImage close;
 
 int helpTime = -1;
 int startTime = -1;
@@ -37,7 +34,7 @@ ArrayList<Integer> queue = new ArrayList<Integer>();
 int curFloor = 1;
 
 String[][] floorLabels = {{"Stacks 4","PS3000-QL","6"},{"Stacks 2","H-LT","4"},{"Mezzanine","Offices","2"},{"Basement","ATLC","0"},
-                          {"Stacks 5","QM-Z","7"},{"Stacks 3","M-PS2999","5"},{"Stacks 1","A-GV","3"},{"Ground","Main Floor","1"},};
+                          {"Stacks 5","QM-Z","7"},{"Stacks 3","M-PS2999","5"},{"Stacks 1","A-GV","3"},{"Ground      ","Main Floor","1"},};
 
 
 
@@ -55,6 +52,9 @@ void setup(){
   button_lit = loadImage("images/button_lit.png");
   speaker = loadImage("images/speaker.png");
   mic = loadImage("images/mic.png");
+  star = loadImage("images/star.png");
+  open = loadImage("images/open.png");
+  close = loadImage("images/close.png");
 
   noStroke();
 }
@@ -96,6 +96,7 @@ void draw(){
      }
   }
 
+  image(star, 530,565,30,30);
   // Bottom Section
 
   // Open Doors
@@ -108,6 +109,8 @@ void draw(){
     image(button_notlit, 195,750,buttonSize,buttonSize);
   }
 
+  image(open,75,790,50,50);
+
   // Close Doors
   if(!buttonHeld[1]){
     fill(0);
@@ -117,6 +120,8 @@ void draw(){
     text("Close Doors", 500,795);
     image(button_notlit, 315,750,buttonSize,buttonSize);
   }
+
+  image(close,475,790,50,50);
 
   // Assistance button
   if(!helpStatus){
@@ -128,10 +133,7 @@ void draw(){
     image(button_notlit, 255,865,buttonSize,buttonSize);
   } else{
     image(button_lit, 255,865,buttonSize,buttonSize);
-    
   }
-
-  
 
   // If there any floor requests, mark the time to simulate switching floors.
   // Then calculate the distance and multiply it by 2s.
@@ -166,7 +168,6 @@ void draw(){
 
 // This function is derived from the linear gradient example provided by Processing
 void xGradient(int x, int y, float w, float h, color c1, color c2) {
-
   noFill();
 
   for (int i = x; i <= x+w; i++) {
