@@ -48,13 +48,13 @@ void setup(){
   xGradient(0, 0, width/2, height, color(#3A3B3C), color(175));
   xGradient(width/2, 0, width/2, height, color(175), color(#3A3B3C));
 
-  button_notlit = loadImage("images/button_notlit.png");
-  button_lit = loadImage("images/button_lit.png");
-  speaker = loadImage("images/speaker.png");
-  mic = loadImage("images/mic.png");
-  star = loadImage("images/star.png");
-  open = loadImage("images/open.png");
-  close = loadImage("images/close.png");
+  button_notlit = loadImage("img/button_notlit.png");
+  button_lit = loadImage("img/button_lit.png");
+  speaker = loadImage("img/speaker.png");
+  mic = loadImage("img/mic.png");
+  star = loadImage("img/star.png");
+  open = loadImage("img/open.png");
+  close = loadImage("img/close.png");
 
   noStroke();
 }
