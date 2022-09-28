@@ -67,7 +67,7 @@ void draw(){
   image(speaker,width/2-speakerSize/2,20,speakerSize,speakerSize);
   image(mic,width/2-micSize/2,150,micSize,micSize);
   
-  // Labels and buttons for the mid section
+  // Mid section
   for(int i=0;i<4;i++){
     for(int j=0;j<2;j++){
       // Labels
@@ -97,6 +97,7 @@ void draw(){
   }
 
   image(star, 530,565,30,30);
+  
   // Bottom Section
 
   // Open Doors
