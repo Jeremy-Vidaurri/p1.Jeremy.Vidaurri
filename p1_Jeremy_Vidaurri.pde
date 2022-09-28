@@ -45,8 +45,7 @@ void setup(){
   labelFont = createFont("Roboto",26);
   infoFont = createFont("Roboto",16);
 
-  xGradient(0, 0, width/2, height, color(#3A3B3C), color(175));
-  xGradient(width/2, 0, width/2, height, color(175), color(#3A3B3C));
+  background(loadImage("img/metal-bg.jpg"));
 
   button_notlit = loadImage("img/button_notlit.png");
   button_lit = loadImage("img/button_lit.png");
@@ -165,18 +164,6 @@ void draw(){
 
   fill(0);
   line(300,0,300,1000);
-}
-
-// This function is derived from the linear gradient example provided by Processing
-void xGradient(int x, int y, float w, float h, color c1, color c2) {
-  noFill();
-
-  for (int i = x; i <= x+w; i++) {
-    float inter = map(i, x, x+w, 0, 1);
-    color c = lerpColor(c1, c2, inter);
-    stroke(c);
-    line(i, y, i, y+h);
-  }
 }
 
 void mouseClicked(){
